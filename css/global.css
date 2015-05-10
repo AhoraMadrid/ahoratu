@@ -24,6 +24,12 @@ ul.globalNav li a:hover{
 	margin-right: 0.5em;
 }
 
+ul.globalNav li a span{
+	font-family: 'Ubuntu', sans-serif;
+	font-weight: 700;
+	color: rgba(255, 255, 255, 0.9);
+}
+
 ul.globalNav li a:after{
 content: "/";
 padding-left: 0.5em;
