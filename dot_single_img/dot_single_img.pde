@@ -1,14 +1,16 @@
-/* @pjs preload="fotos_small/anderson.png, fotos_small/calosci.png, fotos_small/0_g.png, fotos_small/1_g.png"; */
+/* @pjs preload="fotos_small/anderson.png, fotos_small/calosci.png"; */
 
 ArrayList <dot> Punti;
-int squareTo;
+float squareTo;
 PImage online;
+PImage grayImage;
 String url;
 
 int counter, maxCounter;
 int vMode;
 
 String[] images;
+String imgFile ;
 
 void setup(){
   size(324,324);
@@ -17,8 +19,9 @@ void setup(){
   maxCounter = 24*3;
   vMode = 0; // 0 puntitos // 1: IMG
    
-  online = loadImage("fotos_small/0_g.png");
-  images = loadStrings("fotos_small/images.txt");
+  // url = "http://www.negot.net/ahoraTU/fotos_small/anderson.png";
+ // online = loadImage("fotos_small/anderson.png");
+  //online = requestImage(url);
   Punti = new ArrayList();
     
    for (int n = 0; n<(48*48); n++) {
@@ -32,7 +35,12 @@ void setup(){
     p.altro = int(random(Punti.size()));
   }
   
+   grayImage = createImage(48, 48, RGB);
   
+  imgFile = "20";
+  String fileName = imgFile + ".jpg";
+  online = loadImage(fileName);
+  imageDot();
 }
 
 void draw(){
@@ -46,10 +54,32 @@ void draw(){
     p.update(n);
   }
   
-  // counter
-  counter ++;
-  checkCounter();
+}
+
+void keyPressed() {
+  if (key == 'a' ) {
+    //online = loadImage("fotos_small/anderson.png");
+     imageDot();
+  }
   
+  if (key == 'z' ) {
+    //online = loadImage("fotos_small/calosci.png");
+     imageDot();
+  }
+  
+  if (key == ' ' ) {
+     changeDotMode(0);
+  }
+  
+  if (key == 's' ) {
+    String outputDot = imgFile + "_dot.png";
+    String outputGray = imgFile + "_g.png";
+    saveFrame(outputDot);
+    grayImage.save(outputGray);
+    println("guardando: " + outputDot);
+    
+    // save Image
+  }
 }
 
 void checkCounter(){
@@ -65,10 +95,15 @@ void checkCounter(){
       changeDotMode(0);
       vMode = 0;
       maxCounter = 24*2;
-      int N = floor(random(images.length));
-      String newFile = "fotos_small/" + images[N];
-      online = loadImage(newFile);      
-    }
+      
+      // load a different image
+      float R = random(1);
+      if(R<0.5){
+        online = loadImage("fotos_small/anderson.png");
+      } else {
+         online = loadImage("fotos_small/calosci.png");
+      }
+   }
     
     
   }
@@ -76,13 +111,14 @@ void checkCounter(){
 
 
 void imageDot() {
+ online.resize(0, 48);
  PImage myFace_Canvas  = online.get(0,0,48,48);
   // assign x y and w
   float g = (height / squareTo); //  dot grid
   PVector centro = new PVector(width/2, height/2);
 
-  int dotW = floor(myFace_Canvas.width * g);
-  int dotH = floor(myFace_Canvas.height * g);
+  float dotW = floor(myFace_Canvas.width * g);
+  float dotH = floor(myFace_Canvas.height * g);
 
   float deltaX = centro.x - (dotW/2);
   float deltaY = centro.y - (dotH/2);
@@ -96,11 +132,12 @@ void imageDot() {
       float b = brightness(col);
       float w = map(b, 0, 255, 0, g);// diametro
 
-      //float iX = deltaX + g + n*(g);
-      //float iY = deltaY + g + i*(g);
+      float iX = 0  + g/2+ n*(g);
+      float iY = 0  + g/2 + i*(g);
       
-      float iX = deltaX  + g/2+ n*(g);
-      float iY = deltaY  + g/2 + i*(g);
+      // update grayImage
+      grayImage.set(n,i,color(b));
+      //tower.set(30, 20, black); 
 
       dot p = Punti.get(count);
       count ++;
